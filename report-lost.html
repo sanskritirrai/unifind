@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>UniFind | Report Lost Item</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<style>
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+    font-family:Inter, system-ui, sans-serif;
+}
+
+body{
+    background:#f4f7fb;
+    color:#0f172a;
+}
+
+.nav{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    padding:26px 70px;
+}
+
+.logo{
+    font-size:26px;
+    font-weight:800;
+}
+
+.back{
+    background:#4f6ef7;
+    color:#fff;
+    padding:10px 22px;
+    border-radius:30px;
+    border:none;
+    font-weight:600;
+    cursor:pointer;
+}
+
+.container{
+    max-width:900px;
+    margin:40px auto;
+    background:#ffffff;
+    padding:40px;
+    border-radius:26px;
+    box-shadow:0 25px 60px rgba(0,0,0,0.08);
+}
+
+h1{
+    font-size:36px;
+    margin-bottom:10px;
+}
+
+.sub{
+    color:#64748b;
+    margin-bottom:30px;
+    font-size:16px;
+}
+
+.form-grid{
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:24px;
+}
+
+.full{
+    grid-column:1 / -1;
+}
+
+label{
+    font-weight:600;
+    font-size:14px;
+}
+
+input, select, textarea{
+    width:100%;
+    padding:12px 14px;
+    margin-top:8px;
+    border-radius:12px;
+    border:1px solid #cbd5e1;
+    font-size:14px;
+}
+
+textarea{
+    resize:none;
+    height:110px;
+}
+
+input[type="file"]{
+    padding:10px;
+}
+
+.submit{
+    margin-top:30px;
+    width:100%;
+    padding:14px;
+    background:#4f6ef7;
+    color:#fff;
+    border:none;
+    border-radius:14px;
+    font-size:16px;
+    font-weight:700;
+    cursor:pointer;
+}
+</style>
+</head>
+
+<body>
+
+<div class="nav">
+    <div class="logo">UniFind</div>
+    <button class="back" onclick="goBack()">Back to Dashboard</button>
+</div>
+
+<div class="container">
+    <h1>Report Lost Item</h1>
+    <p class="sub">Provide accurate details to help recover your item quickly</p>
+
+    <form onsubmit="submitReport(event)">
+
+        <div class="form-grid">
+
+            <div>
+                <label>Item Name</label>
+                <input type="text" required placeholder="e.g. Wallet, Phone, ID Card">
+            </div>
+
+            <div>
+                <label>Item Category</label>
+                <select required aria-label="Item Category">
+                    <option value="">Select category</option>
+                    <option>Electronics</option>
+                    <option>Documents / ID</option>
+                    <option>Books</option>
+                    <option>Accessories</option>
+                    <option>Other</option>
+                </select>
+            </div>
+
+            <div>
+                <label for="date">Date Lost</label>
+                <input type="date" required id="date">
+            </div>
+
+            <div>
+                <label for="time">Approximate Time</label>
+                <input type="time" id="time">
+            </div>
+
+            <div>
+                <label>Last Seen Location</label>
+                <select required aria-label="Last Seen Location">
+                    <option value="">Select location</option>
+                    <option>Library</option>
+                    <option>Classroom</option>
+                    <option>Cafeteria</option>
+                    <option>Hostel</option>
+                    <option>Sports Complex</option>
+                    <option>Parking Area</option>
+                    <option>Other</option>
+                </select>
+            </div>
+
+            <div>
+                <label>Item Color</label>
+                <input type="text" placeholder="e.g. Black, Blue">
+            </div>
+
+            <div class="full">
+                <label>Item Description</label>
+                <textarea required placeholder="Describe identifying features, marks, brand, etc."></textarea>
+            </div>
+
+            <div class="full">
+                <label>Upload Item Image</label>
+                <input type="file" accept="image/*" title="Upload an image of the lost item" placeholder="Choose an image file" required>
+            </div>
+
+        </div>
+
+        <button type="submit" class="submit">Submit Lost Item Report</button>
+
+    </form>
+</div>
+
+<script>
+function goBack(){
+    window.location.href = "dashboard.html";
+}
+
+function submitReport(e){
+    e.preventDefault();
+    alert("Lost item reported successfully!");
+    window.location.href = "dashboard.html";
+}
+</script>
+
+</body>
+</html>

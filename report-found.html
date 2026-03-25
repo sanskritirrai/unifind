@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>UniFind | Report Found Item</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<style>
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+    font-family:Inter, system-ui, sans-serif;
+}
+
+body{
+    background:#f4f7fb;
+    color:#0f172a;
+}
+
+.nav{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    padding:26px 70px;
+}
+
+.logo{
+    font-size:26px;
+    font-weight:800;
+}
+
+.back{
+    background:#4f6ef7;
+    color:#fff;
+    padding:10px 22px;
+    border-radius:30px;
+    border:none;
+    font-weight:600;
+    cursor:pointer;
+}
+
+.container{
+    max-width:900px;
+    margin:40px auto;
+    background:#ffffff;
+    padding:40px;
+    border-radius:26px;
+    box-shadow:0 25px 60px rgba(0,0,0,0.08);
+}
+
+h1{
+    font-size:36px;
+    margin-bottom:10px;
+}
+
+.sub{
+    color:#64748b;
+    margin-bottom:30px;
+    font-size:16px;
+}
+
+.form-grid{
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:24px;
+}
+
+.full{
+    grid-column:1 / -1;
+}
+
+label{
+    font-weight:600;
+    font-size:14px;
+}
+
+input, select, textarea{
+    width:100%;
+    padding:12px 14px;
+    margin-top:8px;
+    border-radius:12px;
+    border:1px solid #cbd5e1;
+    font-size:14px;
+}
+
+textarea{
+    resize:none;
+    height:110px;
+}
+
+input[type="file"]{
+    padding:10px;
+}
+
+.submit{
+    margin-top:30px;
+    width:100%;
+    padding:14px;
+    background:#4f6ef7;
+    color:#fff;
+    border:none;
+    border-radius:14px;
+    font-size:16px;
+    font-weight:700;
+    cursor:pointer;
+}
+</style>
+</head>
+
+<body>
+
+<div class="nav">
+    <div class="logo">UniFind</div>
+    <button class="back" onclick="goBack()">Back to Dashboard</button>
+</div>
+
+<div class="container">
+    <h1>Report Found Item</h1>
+    <p class="sub">Submit details of items you have found on campus</p>
+
+    <form onsubmit="submitFound(event)">
+
+        <div class="form-grid">
+
+            <div>
+                <label>Item Name</label>
+                <input type="text" required placeholder="e.g. Mobile Phone, ID Card">
+            </div>
+
+            <div>
+                <label for="category">Item Category</label>
+                <select id="category" required>
+                    <option value="">Select category</option>
+                    <option>Electronics</option>
+                    <option>Documents / ID</option>
+                    <option>Books</option>
+                    <option>Accessories</option>
+                    <option>Other</option>
+                </select>
+            </div>
+
+            <div>
+                <label>Date Found</label>
+                <input type="date" required title="Select the date when the item was found">
+            </div>
+
+            <div>
+                <label>Approximate Time</label>
+                <input type="time" title="Approximate time item was found">
+            </div>
+
+            <div>
+                <label for="location">Found At Location</label>
+                <select id="location" required>
+                    <option value="">Select location</option>
+                    <option>Library</option>
+                    <option>Classroom</option>
+                    <option>Cafeteria</option>
+                    <option>Hostel</option>
+                    <option>Sports Complex</option>
+                    <option>Parking Area</option>
+                    <option>Other</option>
+                </select>
+            </div>
+
+            <div>
+                <label>Item Color</label>
+                <input type="text" placeholder="e.g. Black, Silver">
+            </div>
+
+            <div class="full">
+                <label>Item Description</label>
+                <textarea required placeholder="Mention any identifying features or condition of the item"></textarea>
+            </div>
+
+            <div class="full">
+                <label>Upload Item Image (recommended)</label>
+                <input type="file" accept="image/*" title="Upload Item Image">
+            </div>
+
+        </div>
+
+        <button type="submit" class="submit">Submit Found Item</button>
+
+    </form>
+</div>
+
+<script>
+function goBack(){
+    window.location.href = "dashboard.html";
+}
+
+function submitFound(e){
+    e.preventDefault();
+    alert("Found item reported successfully!");
+    window.location.href = "dashboard.html";
+}
+</script>
+
+</body>
+</html>

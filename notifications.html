@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>UniFind | Notifications</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<style>
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+    font-family: Inter, system-ui, sans-serif;
+}
+
+body{
+    background:#f4f7fb;
+    color:#0f172a;
+}
+
+/* NAV */
+.nav{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    padding:26px 70px;
+}
+
+.logo{
+    font-size:26px;
+    font-weight:800;
+}
+
+.back{
+    background:#4f6ef7;
+    color:#fff;
+    padding:10px 22px;
+    border-radius:30px;
+    border:none;
+    font-weight:600;
+    cursor:pointer;
+}
+
+/* CONTAINER */
+.container{
+    padding:20px 70px 60px;
+}
+
+h1{
+    font-size:38px;
+    margin-bottom:8px;
+}
+
+.sub{
+    color:#64748b;
+    margin-bottom:30px;
+    font-size:17px;
+}
+
+/* LIST */
+.list{
+    display:grid;
+    gap:20px;
+}
+
+.card{
+    background:#fff;
+    border-radius:22px;
+    padding:24px 28px;
+    box-shadow:0 20px 40px rgba(0,0,0,0.06);
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    transition:0.3s;
+}
+
+.card.unread{
+    border-left:6px solid #4f6ef7;
+}
+
+.card:hover{
+    transform:translateY(-4px);
+}
+
+/* LEFT */
+.message{
+    max-width:75%;
+}
+
+.title{
+    font-size:18px;
+    font-weight:800;
+    margin-bottom:6px;
+}
+
+.text{
+    font-size:14px;
+    color:#475569;
+}
+
+/* RIGHT */
+.right{
+    text-align:right;
+}
+
+.time{
+    font-size:12px;
+    color:#64748b;
+    margin-bottom:10px;
+}
+
+.btn{
+    background:none;
+    border:none;
+    font-size:13px;
+    font-weight:700;
+    cursor:pointer;
+    margin-left:10px;
+}
+
+.read{
+    color:#4f6ef7;
+}
+
+.delete{
+    color:#ef4444;
+}
+</style>
+</head>
+
+<body>
+
+<div class="nav">
+    <div class="logo">UniFind</div>
+    <button class="back" onclick="goBack()">Back to Dashboard</button>
+</div>
+
+<div class="container">
+    <h1>Notifications</h1>
+    <p class="sub">Stay updated on your lost and found activity</p>
+
+    <div class="list" id="notificationList"></div>
+</div>
+
+<script>
+let notifications = [
+    {
+        title:"Lost Item Approved",
+        text:"Your report for 'Black Wallet' has been approved.",
+        time:"2 hours ago",
+        read:false
+    },
+    {
+        title:"Item Match Found",
+        text:"A found item matches your lost report (Student ID Card).",
+        time:"1 day ago",
+        read:false
+    },
+    {
+        title:"Item Returned",
+        text:"Your item 'iPhone 13' has been successfully returned.",
+        time:"3 days ago",
+        read:true
+    }
+];
+
+const list = document.getElementById("notificationList");
+
+function renderNotifications(){
+    list.innerHTML = "";
+
+    notifications.forEach((n, index) => {
+        const card = document.createElement("div");
+        card.className = `card ${n.read ? "" : "unread"}`;
+
+        card.innerHTML = `
+            <div class="message">
+                <div class="title">${n.title}</div>
+                <div class="text">${n.text}</div>
+            </div>
+
+            <div class="right">
+                <div class="time">${n.time}</div>
+                ${!n.read ? `<button class="btn read" onclick="markRead(${index})">Mark as read</button>` : ""}
+                <button class="btn delete" onclick="deleteNotification(${index})">Delete</button>
+            </div>
+        `;
+
+        list.appendChild(card);
+    });
+
+    if(notifications.length === 0){
+        list.innerHTML = "<p class='sub'>No notifications</p>";
+    }
+}
+
+function markRead(index){
+    notifications[index].read = true;
+    renderNotifications();
+}
+
+function deleteNotification(index){
+    if(confirm("Delete this notification?")){
+        notifications.splice(index,1);
+        renderNotifications();
+    }
+}
+
+function goBack(){
+    window.location.href = "dashboard.html";
+}
+
+renderNotifications();
+</script>
+
+</body>
+</html>

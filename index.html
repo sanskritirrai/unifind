@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>UniFind | Login</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<style>
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+    font-family:Inter, system-ui, sans-serif;
+}
+
+body{
+    background:#f4f7fb;
+}
+
+.nav{
+    display:flex;
+    justify-content:space-between;
+    padding:28px 70px;
+}
+
+.logo{
+    font-size:26px;
+    font-weight:800;
+}
+
+.main{
+    display:flex;
+    justify-content:space-between;
+    padding:70px;
+    align-items:center;
+}
+
+.left{
+    max-width:520px;
+}
+
+.badge{
+    background:#e9efff;
+    color:#4f6ef7;
+    padding:8px 16px;
+    border-radius:20px;
+    display:inline-block;
+    font-weight:600;
+    margin-bottom:20px;
+}
+
+h1{
+    font-size:54px;
+    margin-bottom:20px;
+}
+
+.desc{
+    font-size:18px;
+    color:#475569;
+}
+
+.card{
+    width:380px;
+    background:#fff;
+    padding:34px;
+    border-radius:22px;
+    box-shadow:0 25px 60px rgba(0,0,0,0.08);
+}
+
+.tabs{
+    display:flex;
+    background:#f1f5f9;
+    border-radius:14px;
+    overflow:hidden;
+    margin-bottom:28px;
+}
+
+.tab{
+    flex:1;
+    text-align:center;
+    padding:12px;
+    cursor:pointer;
+    font-weight:600;
+    color:#64748b;
+}
+
+.tab.active{
+    background:#4f6ef7;
+    color:#fff;
+}
+
+.form{display:none;}
+.form.active{display:block;}
+
+label{
+    font-weight:600;
+    font-size:14px;
+}
+
+input{
+    width:100%;
+    padding:12px;
+    margin:8px 0 18px;
+    border-radius:10px;
+    border:1px solid #cbd5e1;
+}
+
+button{
+    width:100%;
+    padding:13px;
+    border:none;
+    border-radius:12px;
+    background:#4f6ef7;
+    color:#fff;
+    font-weight:700;
+    cursor:pointer;
+}
+</style>
+</head>
+
+<body>
+
+<div class="nav">
+    <div class="logo">UniFind</div>
+</div>
+
+<div class="main">
+
+<div class="left">
+    <div class="badge">Campus Digital System</div>
+    <h1>Find Lost Items<br>Without Chaos</h1>
+    <p class="desc">
+        A secure platform to manage lost & found items across campus.
+    </p>
+</div>
+
+<div class="card">
+    <div class="tabs">
+        <div class="tab active" onclick="showLogin()">Sign In</div>
+        <div class="tab" onclick="showSignup()">Sign Up</div>
+    </div>
+
+    <form class="form active" onsubmit="redirect(event)">
+        <label for="email">University Email</label>
+        <input type="email" placeholder="example@krmu.edu.in" required>
+
+
+        <label for="password">Password</label>
+        <input type="password" id="password" required>
+        <button type="submit">Continue</button>
+    </form>
+
+    <form class="form" onsubmit="redirect(event)">
+        <label>Full Name</label>
+        <input type="text" required>
+
+        <label>University Email</label>
+        <input type="email" placeholder="example@krmu.edu.in" required>
+
+        <label for="password">Password</label>
+        <input type="password" id="password" required>
+
+        <button type="submit">Create Account</button>
+    </form>
+</div>
+
+</div>
+
+
+<script>
+const tabs = document.querySelectorAll('.tab');
+const forms = document.querySelectorAll('.form');
+
+function showLogin(){
+    tabs[0].classList.add('active');
+    tabs[1].classList.remove('active');
+    forms[0].classList.add('active');
+    forms[1].classList.remove('active');
+}
+
+function showSignup(){
+    tabs[1].classList.add('active');
+    tabs[0].classList.remove('active');
+    forms[1].classList.add('active');
+    forms[0].classList.remove('active');
+}
+
+function redirect(e){
+    e.preventDefault();
+
+    const emailInput = e.target.querySelector('input[type="email"]');
+    const email = emailInput.value.trim();
+
+    if(!email.endsWith("@krmu.edu.in")){
+        alert("Please use your official university email (@krmu.edu.in)");
+        emailInput.focus();
+        return;
+    }
+
+    window.location.href = "dashboard.html";
+}
+async function signup(){
+    const name = document.getElementById("name").value;
+    const email = document.getElementById("email").value;
+    const password = document.getElementById("password").value;
+
+    const res = await fetch("http://localhost:3000/signup", {
+        method: "POST",
+        headers: {"Content-Type": "application/json"},
+        body: JSON.stringify({ name, email, password })
+    });
+
+    const msg = await res.text();
+    alert(msg);
+}
+
+</script>
+
+</body>
+</html>
