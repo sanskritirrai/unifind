@@ -143,60 +143,48 @@ h1{
 </div>
 
 <script>
-    const user = JSON.parse(localStorage.getItem("user"));
-    if(!user){
-        window.location.href = "index.html";
-    }
-let notifications = [
-    {
-        title:"Lost Item Approved",
-        text:"Your report for 'Black Wallet' has been approved.",
-        time:"2 hours ago",
-        read:false
-    },
-    {
-        title:"Item Match Found",
-        text:"A found item matches your lost report (Student ID Card).",
-        time:"1 day ago",
-        read:false
-    },
-    {
-        title:"Item Returned",
-        text:"Your item 'iPhone 13' has been successfully returned.",
-        time:"3 days ago",
-        read:true
-    }
-];
-
 const list = document.getElementById("notificationList");
 
-function renderNotifications(){
+const user = JSON.parse(localStorage.getItem("user"));
+
+if(!user){
+    window.location.href = "index.html";
+}
+
+async function renderNotifications(){
+    const res = await fetch(`http://localhost:3000/notifications/${user.id}`);
+    const notifications = await res.json();
+
+    console.log("LIVE DATA:", notifications);
+
     list.innerHTML = "";
 
-    notifications.forEach((n, index) => {
+    if(notifications.length === 0){
+        list.innerHTML = "<p class='sub'>No notifications</p>";
+        return;
+    }
+
+    notifications.forEach((n) => {
         const card = document.createElement("div");
-        card.className = `card ${n.read ? "" : "unread"}`;
+
+        card.className = `card ${n.read_status ? "" : "unread"}`;
 
         card.innerHTML = `
             <div class="message">
-                <div class="title">${n.title}</div>
-                <div class="text">${n.text}</div>
+                <div class="title">Notification</div>
+                <div class="text">${n.message}</div>
             </div>
 
             <div class="right">
-                <div class="time">${n.time}</div>
-                ${!n.read ? `<button class="btn read" onclick="markRead(${index})">Mark as read</button>` : ""}
-                <button class="btn delete" onclick="deleteNotification(${index})">Delete</button>
+                <div class="time">${n.created_at}</div>
             </div>
         `;
 
         list.appendChild(card);
     });
-
-    if(notifications.length === 0){
-        list.innerHTML = "<p class='sub'>No notifications</p>";
-    }
 }
+
+renderNotifications();
 
 function markRead(index){
     notifications[index].read = true;
@@ -213,8 +201,6 @@ function deleteNotification(index){
 function goBack(){
     window.location.href = "dashboard.html";
 }
-
-renderNotifications();
 </script>
 
 </body>

@@ -27,23 +27,6 @@ app.listen(3000, () => {
     console.log("Server running on port 3000");
 });
 
-app.post("/signup", (req, res) => {
-    const { name, email, password } = req.body;
-
-    if (!email.endsWith("@krmu.edu.in")) {
-        return res.send("Use university email");
-    }
-
-    db.query(
-        "INSERT INTO users (name, email, password) VALUES (?, ?, ?)",
-        [name, email, password],
-        (err) => {
-            if (err) return res.send("Error or Email exists");
-            res.send("Signup successful");
-        }
-    );
-});
-
 app.post("/login", (req,res)=>{
     const { email, password } = req.body;
 
@@ -65,23 +48,6 @@ app.post("/login", (req,res)=>{
     });
 });
 
-app.post("/login", (req, res) => {
-    const { email, password } = req.body;
-
-    db.query(
-        "SELECT * FROM users WHERE email=? AND password=?",
-        [email, password],
-        (err, result) => {
-            if (err) return res.send("Error");
-
-            if (result.length === 0) {
-                return res.send("Invalid credentials");
-            }
-
-            res.json(result[0]); // send user data
-        }
-    );
-});
 
 app.get("/notifications/:userId", (req,res)=>{
     const userId = req.params.userId;
@@ -132,28 +98,48 @@ app.get("/items", (req,res)=>{
 });
 
 app.post("/report-lost", (req,res)=>{
-    const { user_id, item_name, category, date_lost } = req.body;
+    const { user_id, item_name, category, description, location, date_lost } = req.body;
 
     db.query(
-        "INSERT INTO lost_items (user_id,item_name,category,date_lost) VALUES (?,?,?,?)",
-        [user_id,item_name,category,date_lost],
+        "INSERT INTO lost_items (user_id,item_name,category,description,location,date_lost,status) VALUES (?,?,?,?,?,?,?)",
+        [user_id,item_name,category,description,location,date_lost,"Pending"],
         (err)=>{
-            if(err) return res.send("Error");
+            if(err){
+                console.log(err);
+                return res.send("Error");
+            }
+            db.query(
+                "INSERT INTO notifications (user_id, message) VALUES (?, ?)",
+                [user_id, `Your lost item "${item_name}" was reported successfully`]
+            );
+
             res.send("Lost item added");
         }
     );
 });
 
 app.post("/report-found", (req,res)=>{
-    const { user_id, item_name, category, date_found } = req.body;
+    const { user_id, item_name, category, description, location, date_found } = req.body;
 
     db.query(
-        "INSERT INTO found_items (user_id,item_name,category,date_found) VALUES (?,?,?,?)",
-        [user_id,item_name,category,date_found],
-        ()=> res.send("Found item added")
+        "INSERT INTO found_items (user_id,item_name,category,description,location,date_found,status) VALUES (?,?,?,?,?,?,?)",
+        [user_id,item_name,category,description,location,date_found,"Pending"],
+        (err)=>{
+            if(err){
+                console.log(err);
+                return res.send("Error");
+            }
+
+            // ✅ ADD NOTIFICATION HERE
+            db.query(
+                "INSERT INTO notifications (user_id, message) VALUES (?, ?)",
+                [user_id, `Your found item "${item_name}" was reported successfully`]
+            );
+
+            res.send("Found item added");
+        }
     );
 });
-
 app.get("/stats/:userId", (req,res)=>{
     const userId = req.params.userId;
 
@@ -182,6 +168,15 @@ app.get("/my-reports/:userId", (req,res)=>{
             res.json(result);
         }
     );
+});
+
+app.get("/user/:id", (req,res)=>{
+    const id = req.params.id;
+
+    db.query("SELECT * FROM users WHERE id=?", [id], (err,result)=>{
+        if(err) return res.json({});
+        res.json(result[0]);
+    });
 });
 
 app.get("/search", (req,res)=>{

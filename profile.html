@@ -279,6 +279,29 @@ function goBack(){
 
 document.getElementById("name").value = user.name;
 document.getElementById("email").value = user.email;
+
+async function loadProfile(){
+    const res = await fetch(`http://localhost:3000/user/${user.id}`);
+    const data = await res.json();
+
+    document.getElementById("name").value = data.name;
+    document.getElementById("email").value = data.email;
+    document.getElementById("phone").value = data.phone || "";
+    document.getElementById("dept").value = data.dept || "";
+
+    document.querySelector(".name").innerText = data.name;
+    document.querySelector(".avatar").innerText = data.name[0];
+}
+
+loadProfile();
+
+fetch(`http://localhost:3000/stats/${user.id}`)
+.then(res=>res.json())
+.then(data=>{
+    document.querySelectorAll(".stat h3")[0].innerText = data.lost;
+    document.querySelectorAll(".stat h3")[1].innerText = data.found;
+    document.querySelectorAll(".stat h3")[2].innerText = 0; // optional returned
+});
 </script>
 
 </body>

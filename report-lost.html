@@ -200,18 +200,22 @@ async function submitReport(e){
 
     const user = JSON.parse(localStorage.getItem("user"));
 
-    const item_name = document.querySelector("input[type='text']").value;
-    const category = document.querySelector("select").value;
-    const date = document.getElementById("date").value;
+    const item_name = document.querySelector('input[type="text"]').value;
+    const category = document.querySelector('select').value;
+    const date_lost = document.getElementById("date").value;
+    const description = document.querySelector('textarea').value;
+    const location = document.querySelectorAll('select')[1].value;
 
-    const res = await fetch("http://localhost:3000/report-lost", {
-        method:"POST",
-        headers:{"Content-Type":"application/json"},
+    const res = await fetch("http://localhost:3000/lost", {
+        method: "POST",
+        headers: {"Content-Type":"application/json"},
         body: JSON.stringify({
             user_id: user.id,
             item_name,
             category,
-            date_lost: date
+            description,
+            location,
+            date_lost
         })
     });
 

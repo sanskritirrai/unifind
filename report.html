@@ -161,10 +161,12 @@ h1{
 </div>
 
 <script>
-    const user = JSON.parse(localStorage.getItem("user"));
-    if(!user){
-        window.location.href = "index.html";
-    }
+const user = JSON.parse(localStorage.getItem("user"));
+if(!user){
+    window.location.href = "index.html";
+}
+
+const list = document.getElementById("reportList");
 
 async function renderReports(){
     const res = await fetch(`http://localhost:3000/my-reports/${user.id}`);
@@ -172,7 +174,12 @@ async function renderReports(){
 
     list.innerHTML = "";
 
-    reports.forEach((r, index) => {
+    if(reports.length === 0){
+        list.innerHTML = "<p class='sub'>No reports found</p>";
+        return;
+    }
+
+    reports.forEach((r) => {
         const card = document.createElement("div");
         card.className = "card";
 
@@ -182,12 +189,12 @@ async function renderReports(){
                     ${r.type}
                 </span>
                 <div class="title">${r.item_name}</div>
-                <div class="meta">Location: ${r.location || "N/A"} • Date: ${r.date}</div>
+                <div class="meta">Location: ${r.location} • Date: ${r.date}</div>
             </div>
 
             <div class="right">
-                <div class="status ${r.status.toLowerCase()}">
-                    ${r.status}
+                <div class="status ${(r.status || "Pending").toLowerCase()}">
+                    ${r.status || "Pending"}
                 </div>
             </div>
         `;
@@ -198,48 +205,10 @@ async function renderReports(){
 
 renderReports();
 
-const list = document.getElementById("reportList");
-
-function renderReports(){
-    list.innerHTML = "";
-
-    reports.forEach((r, index) => {
-        const card = document.createElement("div");
-        card.className = "card";
-        card.innerHTML = `
-            <div class="left">
-                <span class="type ${r.type === "Lost" ? "lost" : "found"}">
-                    ${r.type}
-                </span>
-                <div class="title">${r.item}</div>
-                <div class="meta">Location: ${r.location} • Date: ${r.date}</div>
-            </div>
-
-            <div class="right">
-                <div class="status ${r.status.toLowerCase()}">
-                    ${r.status}
-                </div><br>
-                <button class="delete" onclick="deleteReport(${index})">
-                    Delete
-                </button>
-            </div>
-        `;
-        list.appendChild(card);
-    });
-}
-
-function deleteReport(index){
-    if(confirm("Are you sure you want to delete this report?")){
-        reports.splice(index, 1);
-        renderReports();
-    }
-}
-
 function goBack(){
     window.location.href = "dashboard.html";
 }
 
-renderReports();
 </script>
 
 </body>

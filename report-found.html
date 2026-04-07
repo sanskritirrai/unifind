@@ -206,22 +206,28 @@ async function submitFound(e){
 
     const user = JSON.parse(localStorage.getItem("user"));
 
-    const item_name = document.querySelector("input[type='text']").value;
+    const item_name = document.querySelector('input[type="text"]').value;
     const category = document.getElementById("category").value;
-    const date_found = document.querySelector("input[type='date']").value;
+    const date_found = document.querySelector('input[type="date"]').value;
+    const description = document.querySelector('textarea').value;
+    const location = document.getElementById("location").value;
 
-    const res = await fetch("http://localhost:3000/report-found", {
-        method:"POST",
-        headers:{"Content-Type":"application/json"},
+    const res = await fetch("http://localhost:3000/found", {
+        method: "POST",
+        headers: {"Content-Type":"application/json"},
         body: JSON.stringify({
             user_id: user.id,
             item_name,
             category,
+            description,
+            location,
             date_found
         })
     });
 
-    alert(await res.text());
+    const msg = await res.text();
+    alert(msg);
+    window.location.href = "dashboard.html";
 }
 </script>
 

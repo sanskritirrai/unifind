@@ -199,6 +199,11 @@ input, select{
 </div>
 
 <script>
+    const resultsDiv = document.getElementById("results");
+const searchInput = document.getElementById("searchInput");
+const categoryFilter = document.getElementById("categoryFilter");
+const locationFilter = document.getElementById("locationFilter");
+const statusFilter = document.getElementById("statusFilter");
     const user = JSON.parse(localStorage.getItem("user"));
     if(!user){
         window.location.href = "index.html";
@@ -238,50 +243,11 @@ async function renderItems(){
         resultsDiv.appendChild(card);
     });
 }
-
-const resultsDiv = document.getElementById("results");
-const searchInput = document.getElementById("searchInput");
-const categoryFilter = document.getElementById("categoryFilter");
-const locationFilter = document.getElementById("locationFilter");
-const statusFilter = document.getElementById("statusFilter");
-
-function renderItems(){
-    resultsDiv.innerHTML = "";
-
-    const filtered = items.filter(item => {
-        return (
-            item.name.toLowerCase().includes(searchInput.value.toLowerCase()) &&
-            (categoryFilter.value === "" || item.category === categoryFilter.value) &&
-            (locationFilter.value === "" || item.location === locationFilter.value) &&
-            (statusFilter.value === "" || item.status === statusFilter.value)
-        );
-    });
-
-    if(filtered.length === 0){
-        resultsDiv.innerHTML = `<div class="empty">No items found</div>`;
-        return;
-    }
-
-    filtered.forEach(item => {
-        const card = document.createElement("div");
-        card.className = "card";
-        card.innerHTML = `
-            <span class="tag ${item.status === "Lost" ? "lost" : "found"}">
-                ${item.status}
-            </span>
-            <div class="item-name">${item.name}</div>
-            <div class="meta">Category: ${item.category}</div>
-            <div class="meta">Location: ${item.location}</div>
-        `;
-        resultsDiv.appendChild(card);
-    });
-}
+renderItems();
 
 document.querySelectorAll("input, select").forEach(el => {
     el.addEventListener("input", renderItems);
 });
-
-renderItems();
 
 function goBack(){
     window.location.href = "dashboard.html";

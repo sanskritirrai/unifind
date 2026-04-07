@@ -116,17 +116,17 @@ h1{
 
         <div class="card">
             <div class="stat-title">Items Reported</div>
-            <div class="stat">128</div>
+            <div class="stat" id="lostCount">0</div>
         </div>
 
         <div class="card">
             <div class="stat-title">Items Returned</div>
-            <div class="stat">96</div>
+            <div class="stat" id="foundCount">0</div>
         </div>
 
         <div class="card">
             <div class="stat-title">Pending Claims</div>
-            <div class="stat">14</div>
+            <div class="stat" id="pendingCount">0</div>
         </div>
 
         <div class="card clickable" onclick="window.location.href='report-lost.html'">
@@ -166,12 +166,22 @@ h1{
         window.location.href = "index.html";
     }
 
-fetch(`http://localhost:3000/stats/${user.id}`)
-.then(res=>res.json())
-.then(data=>{
-    document.querySelectorAll(".stat")[0].innerText = data.lost;
-    document.querySelectorAll(".stat")[1].innerText = data.found;
-});
+async function loadStats(){
+    const res = await fetch(`http://localhost:3000/stats/${user.id}`);
+    const data = await res.json();
+
+    console.log("STATS:", data);
+
+    document.getElementById("lostCount").innerText = data.lost || 0;
+    document.getElementById("foundCount").innerText = data.found || 0;
+
+    // Optional: pending (for now set 0 or calculate later)
+    document.getElementById("pendingCount").innerText = 0;
+}
+
+loadStats();
+
+setInterval(loadStats, 3000);
   </script>
 
 </body>
