@@ -221,3 +221,24 @@ app.post("/update-profile", (req,res)=>{
         }
     );
 });
+
+const bcrypt = require("bcrypt");
+
+app.post("/signup", async (req, res) => {
+    const { name, email, password } = req.body;
+
+    if (!email.endsWith("@krmu.edu.in")) {
+        return res.send("Use university email");
+    }
+
+    const hashed = await bcrypt.hash(password, 10);
+
+    db.query(
+        "INSERT INTO users (name, email, password) VALUES (?, ?, ?)",
+        [name, email, hashed],
+        (err) => {
+            if (err) return res.send("Error or Email exists");
+            res.send("Signup successful");
+        }
+    );
+});
