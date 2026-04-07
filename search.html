@@ -195,18 +195,49 @@ input, select{
         </div>
     </div>
 
-    <!-- RESULTS -->
     <div class="results" id="results"></div>
 </div>
 
 <script>
-const items = [
-    {name:"Black Wallet", category:"Accessories", location:"Library", status:"Lost"},
-    {name:"iPhone 13", category:"Electronics", location:"Cafeteria", status:"Found"},
-    {name:"Student ID Card", category:"Documents / ID", location:"Hostel", status:"Lost"},
-    {name:"Physics Textbook", category:"Books", location:"Classroom", status:"Found"},
-    {name:"Bluetooth Earbuds", category:"Electronics", location:"Sports Complex", status:"Lost"}
-];
+    const user = JSON.parse(localStorage.getItem("user"));
+    if(!user){
+        window.location.href = "index.html";
+    }
+async function renderItems(){
+    const name = searchInput.value;
+    const category = categoryFilter.value;
+    const location = locationFilter.value;
+    const status = statusFilter.value;
+
+    const res = await fetch(
+        `http://localhost:3000/search?name=${name}&category=${category}&location=${location}&status=${status}`
+    );
+
+    const items = await res.json();
+
+    resultsDiv.innerHTML = "";
+
+    if(items.length === 0){
+        resultsDiv.innerHTML = `<div class="empty">No items found</div>`;
+        return;
+    }
+
+    items.forEach(item => {
+        const card = document.createElement("div");
+        card.className = "card";
+
+        card.innerHTML = `
+            <span class="tag ${item.status === "Lost" ? "lost" : "found"}">
+                ${item.status}
+            </span>
+            <div class="item-name">${item.item_name}</div>
+            <div class="meta">Category: ${item.category}</div>
+            <div class="meta">Location: ${item.location}</div>
+        `;
+
+        resultsDiv.appendChild(card);
+    });
+}
 
 const resultsDiv = document.getElementById("results");
 const searchInput = document.getElementById("searchInput");

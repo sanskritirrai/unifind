@@ -161,29 +161,42 @@ h1{
 </div>
 
 <script>
-const reports = [
-    {
-        type:"Lost",
-        item:"Black Wallet",
-        location:"Library",
-        date:"2026-01-15",
-        status:"Pending"
-    },
-    {
-        type:"Found",
-        item:"iPhone 13",
-        location:"Cafeteria",
-        date:"2026-01-12",
-        status:"Approved"
-    },
-    {
-        type:"Lost",
-        item:"Student ID Card",
-        location:"Hostel",
-        date:"2026-01-08",
-        status:"Returned"
+    const user = JSON.parse(localStorage.getItem("user"));
+    if(!user){
+        window.location.href = "index.html";
     }
-];
+
+async function renderReports(){
+    const res = await fetch(`http://localhost:3000/my-reports/${user.id}`);
+    const reports = await res.json();
+
+    list.innerHTML = "";
+
+    reports.forEach((r, index) => {
+        const card = document.createElement("div");
+        card.className = "card";
+
+        card.innerHTML = `
+            <div class="left">
+                <span class="type ${r.type === "Lost" ? "lost" : "found"}">
+                    ${r.type}
+                </span>
+                <div class="title">${r.item_name}</div>
+                <div class="meta">Location: ${r.location || "N/A"} • Date: ${r.date}</div>
+            </div>
+
+            <div class="right">
+                <div class="status ${r.status.toLowerCase()}">
+                    ${r.status}
+                </div>
+            </div>
+        `;
+
+        list.appendChild(card);
+    });
+}
+
+renderReports();
 
 const list = document.getElementById("reportList");
 

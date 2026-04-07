@@ -187,6 +187,11 @@ input[type="file"]{
 </div>
 
 <script>
+    
+    const user = JSON.parse(localStorage.getItem("user"));
+    if(!user){
+        window.location.href = "index.html";
+    }
 function goBack(){
     window.location.href = "dashboard.html";
 }
@@ -195,6 +200,28 @@ function submitFound(e){
     e.preventDefault();
     alert("Found item reported successfully!");
     window.location.href = "dashboard.html";
+}
+async function submitFound(e){
+    e.preventDefault();
+
+    const user = JSON.parse(localStorage.getItem("user"));
+
+    const item_name = document.querySelector("input[type='text']").value;
+    const category = document.getElementById("category").value;
+    const date_found = document.querySelector("input[type='date']").value;
+
+    const res = await fetch("http://localhost:3000/report-found", {
+        method:"POST",
+        headers:{"Content-Type":"application/json"},
+        body: JSON.stringify({
+            user_id: user.id,
+            item_name,
+            category,
+            date_found
+        })
+    });
+
+    alert(await res.text());
 }
 </script>
 

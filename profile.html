@@ -242,13 +242,33 @@ input:disabled{
 </div>
 
 <script>
+    const user = JSON.parse(localStorage.getItem("user"));
+    if(!user){
+        window.location.href = "index.html";
+    }
 function enableEdit(){
     document.getElementById("phone").disabled = false;
     document.getElementById("dept").disabled = false;
 }
 
-function saveProfile(){
-    alert("Profile updated successfully!");
+async function saveProfile(){
+    const phone = document.getElementById("phone").value;
+    const dept = document.getElementById("dept").value;
+
+    const user = JSON.parse(localStorage.getItem("user"));
+
+    const res = await fetch("http://localhost:3000/update-profile", {
+        method:"POST",
+        headers:{"Content-Type":"application/json"},
+        body: JSON.stringify({
+            id: user.id,
+            phone,
+            dept
+        })
+    });
+
+    alert(await res.text());
+
     document.getElementById("phone").disabled = true;
     document.getElementById("dept").disabled = true;
 }
@@ -256,6 +276,9 @@ function saveProfile(){
 function goBack(){
     window.location.href = "dashboard.html";
 }
+
+document.getElementById("name").value = user.name;
+document.getElementById("email").value = user.email;
 </script>
 
 </body>

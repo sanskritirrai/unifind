@@ -187,13 +187,36 @@ input[type="file"]{
 </div>
 
 <script>
+    const user = JSON.parse(localStorage.getItem("user"));
+    if(!user){
+        window.location.href = "index.html";
+    }
 function goBack(){
     window.location.href = "dashboard.html";
 }
 
-function submitReport(e){
+async function submitReport(e){
     e.preventDefault();
-    alert("Lost item reported successfully!");
+
+    const user = JSON.parse(localStorage.getItem("user"));
+
+    const item_name = document.querySelector("input[type='text']").value;
+    const category = document.querySelector("select").value;
+    const date = document.getElementById("date").value;
+
+    const res = await fetch("http://localhost:3000/report-lost", {
+        method:"POST",
+        headers:{"Content-Type":"application/json"},
+        body: JSON.stringify({
+            user_id: user.id,
+            item_name,
+            category,
+            date_lost: date
+        })
+    });
+
+    const msg = await res.text();
+    alert(msg);
     window.location.href = "dashboard.html";
 }
 </script>

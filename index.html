@@ -140,22 +140,22 @@ button{
         <div class="tab" onclick="showSignup()">Sign Up</div>
     </div>
 
-    <form class="form active" onsubmit="redirect(event)">
-        <label for="email">University Email</label>
-        <input type="email" placeholder="example@krmu.edu.in" required>
+    <form class="form active" onsubmit="login(event)">
+        <label for="loginEmail">University Email</label>
+        <input type="email" id="loginEmail" placeholder="example@krmu.edu.in" required>
 
 
-        <label for="password">Password</label>
-        <input type="password" id="password" required>
+        <label for="loginPassword">Password</label>
+        <input type="password" id="loginPassword" placeholder="Enter your password" required>
         <button type="submit">Continue</button>
     </form>
 
-    <form class="form" onsubmit="redirect(event)">
+    <form class="form" onsubmit="signup(event)">
         <label>Full Name</label>
-        <input type="text" required>
+        <input type="text" id="name" required>
 
         <label>University Email</label>
-        <input type="email" placeholder="example@krmu.edu.in" required>
+        <input type="email" id="email" placeholder="example@krmu.edu.in" required>
 
         <label for="password">Password</label>
         <input type="password" id="password" required>
@@ -185,35 +185,44 @@ function showSignup(){
     forms[0].classList.remove('active');
 }
 
-function redirect(e){
+async function login(e){
     e.preventDefault();
 
-    const emailInput = e.target.querySelector('input[type="email"]');
-    const email = emailInput.value.trim();
+    const email = e.target.querySelector('input[type="email"]').value;
+    const password = e.target.querySelector('input[type="password"]').value;
 
-    if(!email.endsWith("@krmu.edu.in")){
-        alert("Please use your official university email (@krmu.edu.in)");
-        emailInput.focus();
-        return;
+    const res = await fetch("http://localhost:3000/login", {
+        method: "POST",
+        headers: {"Content-Type":"application/json"},
+        body: JSON.stringify({ email, password })
+    });
+
+    const user = await res.json();
+
+    if(user && user.id){
+        localStorage.setItem("user", JSON.stringify(user));
+        window.location.href = "dashboard.html";
+    } else {
+        alert("Invalid login");
+    }
     }
 
-    window.location.href = "dashboard.html";
-}
-async function signup(){
-    const name = document.getElementById("name").value;
-    const email = document.getElementById("email").value;
-    const password = document.getElementById("password").value;
+async function signup(e){
+    e.preventDefault();
+
+    const name = e.target.querySelector('input[type="text"]').value;
+    const email = e.target.querySelector('input[type="email"]').value;
+    const password = e.target.querySelector('input[type="password"]').value;
 
     const res = await fetch("http://localhost:3000/signup", {
         method: "POST",
-        headers: {"Content-Type": "application/json"},
+        headers: {"Content-Type":"application/json"},
         body: JSON.stringify({ name, email, password })
     });
 
     const msg = await res.text();
     alert(msg);
 }
-
 </script>
 
 </body>
