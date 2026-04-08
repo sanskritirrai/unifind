@@ -184,13 +184,16 @@ async function renderReports(){
         card.className = "card";
 
         card.innerHTML = `
-            <div class="left">
-                <span class="type ${r.type === "Lost" ? "lost" : "found"}">
-                    ${r.type}
-                </span>
-                <div class="title">${r.item_name}</div>
-                <div class="meta">Location: ${r.location} • Date: ${r.date}</div>
-            </div>
+    <div class="left">
+        <img src="http://localhost:3000/uploads/${r.image}" width="80" style="border-radius:10px; margin-bottom:10px;">
+        
+        <span class="type ${r.type === "Lost" ? "lost" : "found"}">
+            ${r.type}
+        </span>
+
+        <div class="title">${r.item_name}</div>
+        <div class="meta">Location: ${r.location} • Date: ${r.date}</div>
+    </div>
 
             <div class="right">
                 <div class="status ${(r.status || "Pending").toLowerCase()}">

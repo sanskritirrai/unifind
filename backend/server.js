@@ -18,6 +18,21 @@ db.connect(err => {
     else console.log("Connected to MySQL");
 });
 
+const multer = require("multer");
+
+const storage = multer.diskStorage({
+    destination: function (req, file, cb) {
+        cb(null, "uploads/");
+    },
+    filename: function (req, file, cb) {
+        cb(null, Date.now() + "-" + file.originalname);
+    }
+});
+
+const upload = multer({ storage });
+
+app.use("/uploads", express.static("uploads"));
+
 // TEST API
 app.get("/", (req, res) => {
     res.send("Backend working 🚀");
@@ -97,20 +112,23 @@ app.get("/items", (req,res)=>{
     });
 });
 
-app.post("/report-lost", (req,res)=>{
+app.post("/report-lost", upload.single("image"), (req,res)=>{
     const { user_id, item_name, category, description, location, date_lost } = req.body;
 
+    const image = req.file ? req.file.filename : null;
+
     db.query(
-        "INSERT INTO lost_items (user_id,item_name,category,description,location,date_lost,status) VALUES (?,?,?,?,?,?,?)",
-        [user_id,item_name,category,description,location,date_lost,"Pending"],
+        "INSERT INTO lost_items (user_id,item_name,category,description,location,date_lost,status,image) VALUES (?,?,?,?,?,?,?,?)",
+        [user_id,item_name,category,description,location,date_lost,"Pending", image],
         (err)=>{
             if(err){
                 console.log(err);
                 return res.send("Error");
             }
+
             db.query(
                 "INSERT INTO notifications (user_id, message) VALUES (?, ?)",
-                [user_id, `Your lost item "${item_name}" was reported successfully`]
+                [user_id, `Lost item "${item_name}" reported successfully`]
             );
 
             res.send("Lost item added");
@@ -118,28 +136,30 @@ app.post("/report-lost", (req,res)=>{
     );
 });
 
-app.post("/report-found", (req,res)=>{
+app.post("/report-found", upload.single("image"), (req,res)=>{
     const { user_id, item_name, category, description, location, date_found } = req.body;
 
+    const image = req.file ? req.file.filename : null;
+
     db.query(
-        "INSERT INTO found_items (user_id,item_name,category,description,location,date_found,status) VALUES (?,?,?,?,?,?,?)",
-        [user_id,item_name,category,description,location,date_found,"Pending"],
+        "INSERT INTO found_items (user_id,item_name,category,description,location,date_found,status,image) VALUES (?,?,?,?,?,?,?,?)",
+        [user_id,item_name,category,description,location,date_found,"Pending", image],
         (err)=>{
             if(err){
                 console.log(err);
                 return res.send("Error");
             }
 
-            // ✅ ADD NOTIFICATION HERE
             db.query(
                 "INSERT INTO notifications (user_id, message) VALUES (?, ?)",
-                [user_id, `Your found item "${item_name}" was reported successfully`]
+                [user_id, `Found item "${item_name}" reported successfully`]
             );
 
             res.send("Found item added");
         }
     );
 });
+
 app.get("/stats/:userId", (req,res)=>{
     const userId = req.params.userId;
 

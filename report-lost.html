@@ -176,7 +176,7 @@ input[type="file"]{
 
             <div class="full">
                 <label>Upload Item Image</label>
-                <input type="file" accept="image/*" title="Upload an image of the lost item" placeholder="Choose an image file" required>
+                <input type="file" accept="image/*" title="Upload an image of the lost item" placeholder="Choose an image file" required id="image" name="image">
             </div>
 
         </div>
@@ -195,29 +195,25 @@ function goBack(){
     window.location.href = "dashboard.html";
 }
 
-async function submitReport(e){
+async function submitForm(e){
     e.preventDefault();
 
-    const user = JSON.parse(localStorage.getItem("user"));
+    const formData = new FormData();
 
-    const item_name = document.querySelector('input[type="text"]').value;
-    const category = document.querySelector('select').value;
-    const date_lost = document.getElementById("date").value;
-    const description = document.querySelector('textarea').value;
-    const location = document.querySelectorAll('select')[1].value;
+    formData.append("user_id", user.id);
+    formData.append("item_name", document.getElementById("item").value);
+    formData.append("category", document.getElementById("category").value);
+    formData.append("description", document.getElementById("desc").value);
+    formData.append("location", document.getElementById("location").value);
+    formData.append("date_lost", document.getElementById("date").value);
+    formData.append("image", document.getElementById("image").files[0]);
 
-    const res = await fetch("http://localhost:3000/lost", {
+    const res = await fetch("http://localhost:3000/report-lost", {
         method: "POST",
-        headers: {"Content-Type":"application/json"},
-        body: JSON.stringify({
-            user_id: user.id,
-            item_name,
-            category,
-            description,
-            location,
-            date_lost
-        })
+        body: formData
     });
+
+    alert(await res.text());
 
     const msg = await res.text();
     alert(msg);

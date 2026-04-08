@@ -232,13 +232,16 @@ async function renderItems(){
         card.className = "card";
 
         card.innerHTML = `
-            <span class="tag ${item.status === "Lost" ? "lost" : "found"}">
-                ${item.status}
-            </span>
-            <div class="item-name">${item.item_name}</div>
-            <div class="meta">Category: ${item.category}</div>
-            <div class="meta">Location: ${item.location}</div>
-        `;
+    <img src="http://localhost:3000/uploads/${item.image}" width="100" style="border-radius:10px; margin-bottom:10px;">
+
+    <span class="tag ${item.status === "Lost" ? "lost" : "found"}">
+        ${item.status}
+    </span>
+
+    <div class="item-name">${item.item_name}</div>
+    <div class="meta">Category: ${item.category}</div>
+    <div class="meta">Location: ${item.location}</div>
+`;
 
         resultsDiv.appendChild(card);
     });

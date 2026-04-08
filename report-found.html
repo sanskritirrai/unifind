@@ -176,7 +176,7 @@ input[type="file"]{
 
             <div class="full">
                 <label>Upload Item Image (recommended)</label>
-                <input type="file" accept="image/*" title="Upload Item Image">
+                <input type="file" accept="image/*" title="Upload Item Image" id="image" name="image">
             </div>
 
         </div>
@@ -192,43 +192,33 @@ input[type="file"]{
     if(!user){
         window.location.href = "index.html";
     }
-function goBack(){
-    window.location.href = "dashboard.html";
-}
 
-function submitFound(e){
-    e.preventDefault();
-    alert("Found item reported successfully!");
-    window.location.href = "dashboard.html";
-}
-async function submitFound(e){
-    e.preventDefault();
+    function goBack(){
+        window.location.href = "dashboard.html";
+    }
 
-    const user = JSON.parse(localStorage.getItem("user"));
+    async function submitFound(e){
+        e.preventDefault();
 
-    const item_name = document.querySelector('input[type="text"]').value;
-    const category = document.getElementById("category").value;
-    const date_found = document.querySelector('input[type="date"]').value;
-    const description = document.querySelector('textarea').value;
-    const location = document.getElementById("location").value;
+        const formData = new FormData();
 
-    const res = await fetch("http://localhost:3000/found", {
-        method: "POST",
-        headers: {"Content-Type":"application/json"},
-        body: JSON.stringify({
-            user_id: user.id,
-            item_name,
-            category,
-            description,
-            location,
-            date_found
-        })
-    });
+        formData.append("user_id", user.id);
+        formData.append("item_name", document.querySelector('input[placeholder="e.g. Mobile Phone, ID Card"]').value);
+        formData.append("category", document.getElementById("category").value);
+        formData.append("description", document.querySelector('textarea').value);
+        formData.append("location", document.getElementById("location").value);
+        formData.append("date_found", document.querySelector('input[type="date"]').value);
+        formData.append("image", document.getElementById("image").files[0]);
 
-    const msg = await res.text();
-    alert(msg);
-    window.location.href = "dashboard.html";
-}
+        const res = await fetch("http://localhost:3000/report-found", {
+            method: "POST",
+            body: formData
+        });
+
+        const msg = await res.text();
+        alert(msg);
+        window.location.href = "dashboard.html";
+    }
 </script>
 
 </body>
